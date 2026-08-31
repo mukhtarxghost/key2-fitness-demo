@@ -7,7 +7,9 @@ Flow:
 Meta verification (GET) is handled separately.
 """
 
-from fastapi import APIRouter, Request
+import os
+
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import PlainTextResponse
 from sqlalchemy.orm import Session
 
@@ -19,7 +21,7 @@ from app.services.lead_service import save_conversation_to_lead
 
 router = APIRouter()
 
-VERIFY_TOKEN = "key2_fitness_123"
+VERIFY_TOKEN = os.environ.get("WHATSAPP_VERIFY_TOKEN", "clinic_ai_123")
 
 
 @router.get(
@@ -28,9 +30,9 @@ VERIFY_TOKEN = "key2_fitness_123"
     description="Meta calls this GET endpoint to verify the webhook URL.",
 )
 async def verify_webhook(
-    hub_mode: str,
-    hub_verify_token: str,
-    hub_challenge: str,
+    hub_mode: str = Query(alias="hub.mode"),
+    hub_verify_token: str = Query(alias="hub.verify_token"),
+    hub_challenge: str = Query(alias="hub.challenge"),
 ):
     if (
         hub_mode == "subscribe"
