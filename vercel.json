@@ -7,7 +7,23 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/health(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/webhook(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/conversations(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/leads(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/business(.*)",
       "dest": "api/index.py"
     }
   ]
