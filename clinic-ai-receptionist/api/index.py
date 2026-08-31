@@ -1,19 +1,7 @@
-import sys
 import os
 
-# Add the project directory to sys.path so Python can find the 'app' package
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "clinic-ai-receptionist"))
+from app.main import app as fastapi_app
 
-from app.main import app as fastapi_app  # noqa: E402
-
-
-# ---------------------------------------------------------------------------
-# ASGI wrapper — fixes path routing for Vercel rewrites
-# ---------------------------------------------------------------------------
-# When Vercel rewrites /health -> api/index.py, the function's ASGI scope
-# receives path "/api/index" (the file path), not "/health" (the original).
-# Vercel sets the x-matched-path header to the original path. We read it
-# and restore scope["path"] so FastAPI routes correctly.
 
 class PathRewriteMiddleware:
     """ASGI middleware that restores the original request path from Vercel's
@@ -28,8 +16,6 @@ class PathRewriteMiddleware:
             matched_path = headers.get(b"x-matched-path", b"").decode()
 
             if matched_path:
-                # matched_path is the original path, e.g. "/health"
-                # Preserve query string if present
                 qs = scope.get("query_string", b"").decode()
                 scope["path"] = matched_path
                 if qs:
